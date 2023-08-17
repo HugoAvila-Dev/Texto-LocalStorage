@@ -15,22 +15,12 @@ function eventListeners() {
         crearHTML();
     })
 
-    //listaTweets.addEventListener('click', borrarTweet);
+    listaTweets.addEventListener('click', borrarTweet);
 }
 
 
 
 //Funciones
-// function borrarTweet(e){
-//     if(e.target.classList.contains('borrar-tweet')){
-//         const id = parseInt(e.target.id);
-//         tweets = JSON.parse(localStorage.getItem('Tweets'))
-//         tweets = tweets.filter( (tweet,indice) => id !== indice)
-//         localStorage.setItem('Tweets', JSON.stringify(tweets))
-//         cargarLista(); 
-//     }
-// }
-
 function agregarTweet(e) {
     e.preventDefault();
     
@@ -76,12 +66,25 @@ function crearHTML() {
     limpiarHTML();
     if(tweets.length > 0) {
         tweets.forEach( tweet => {
+            //Agregar un botón de eliminar
+            const btnEliminar = document.createElement('A');
+            btnEliminar.innerText = 'X';
+            btnEliminar.classList.add('borrar-tweet');
+
+            //Añadir la función de eliminar
+            btnEliminar.onclick = () => {
+                borrarTweet(tweet.id);
+            }
+
             //Crear el HTML
             const li = document.createElement('li');
             
             //Añadir el texto
             li.innerText = tweet.tweet;
-            
+
+            //Asignar el botón
+            li.appendChild(btnEliminar);
+
             //Insetarlo en el final
             listaTweets.appendChild(li);
         });
@@ -95,6 +98,18 @@ function crearHTML() {
 function sincronizarStorage() {
     localStorage.setItem('tweets', JSON.stringify(tweets));
 }
+
+//Elimina un tweet
+function borrarTweet(id){
+    tweets = tweets.filter( tweet => tweet.id !== id);
+    // const id = e.target.getAttribute('id');
+    // tweets = JSON.parse(localStorage.getItem('Tweets'));
+    // tweets = tweets.filter( tweet => tweet.id !== id);
+    // localStorage.setItem('Tweets', JSON.stringify(tweets));
+    // console.log(tweets
+    crearHTML(); 
+}
+
 
 //Limpiar el HTML
 function limpiarHTML(){ 
