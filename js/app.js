@@ -7,11 +7,24 @@ let tweets = [];
 eventListeners();
 function eventListeners() {
     formulario.addEventListener('submit', agregarTweet); 
+    tweets = JSON.parse(localStorage.getItem('Tweets'));
+    crearHTML();
+    listaTweets.addEventListener('click', borrarTweet);
 }
 
 
 
 //Funciones
+function borrarTweet(e){
+    if(e.target.classList.contains('borrar-tweet')){
+        const id = parseInt(e.target.id);
+        tweets = JSON.parse(localStorage.getItem('Tweets'))
+        tweets = tweets.filter( (tweet,indice) => id !== indice)
+        localStorage.setItem('Tweets', JSON.stringify(tweets))
+        cargarLista(); 
+    }
+}
+
 function agregarTweet(e) {
     e.preventDefault();
     
@@ -23,8 +36,18 @@ function agregarTweet(e) {
         mostrarError('Un mensaje no puede ir vacío');
         return;
     }
-    tweets = [...tweets, tweet];
-    cargarLista();
+
+    const tweetObj = {
+        id: Date.now(),
+        tweet //es lo mismo que tweet: tweet
+    }
+
+    tweets = [...tweets, tweetObj];
+    localStorage.setItem('Tweets', JSON.stringify(tweets));
+    crearHTML();
+
+    //Reiniciar el formulario 
+    formulario.reset();
 }  
 
 //Mostrar mensaje de error
@@ -42,23 +65,25 @@ function mostrarError(error) {
         mensajeError.remove();
     }, 3000)
 }
-
-function cargarLista() {
+//Muestra el listado de los tweet
+function crearHTML() {
     limpiarHTML();
-    tweets.forEach( tweet => {
-        const lista = document.createElement('P');
-        lista.classList.add()
-        lista.innerHTML = `
-        <div>
-        <p>${tweet}</p>
-        <a class="borrar-tweet">X</a>
-        </div>
-        
-        `;
-        listaTweets.appendChild(lista);
-    })
+    if(tweets.lenght > 0) {
+        tweets.forEach( tweet => {
+            //Crear el HTML
+            const li = document.createElement('li');
+            
+            //Añadir el texto
+            li.innerText = tweet.tweet;
+            
+            //Insetarlo en el final
+            listaTweets.appendChild(li);
+        });
+    }
+
 }
 
+//Limpiar el HTML
 function limpiarHTML(){ 
     while(listaTweets.firstChild) {
         listaTweets.removeChild(listaTweets.firstChild);
