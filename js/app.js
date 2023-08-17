@@ -6,24 +6,30 @@ let tweets = [];
 //Event Listeners
 eventListeners();
 function eventListeners() {
-    formulario.addEventListener('submit', agregarTweet); 
-    tweets = JSON.parse(localStorage.getItem('Tweets'));
-    crearHTML();
-    listaTweets.addEventListener('click', borrarTweet);
+    //Cuando el ususario agrega un nuevo tweet
+    formulario.addEventListener('submit', agregarTweet);
+    
+    //Cuando el documento está listo
+    document.addEventListener('DOMContentLoaded', () => {
+        tweets = JSON.parse(localStorage.getItem('tweets')) || [];
+        crearHTML();
+    })
+
+    //listaTweets.addEventListener('click', borrarTweet);
 }
 
 
 
 //Funciones
-function borrarTweet(e){
-    if(e.target.classList.contains('borrar-tweet')){
-        const id = parseInt(e.target.id);
-        tweets = JSON.parse(localStorage.getItem('Tweets'))
-        tweets = tweets.filter( (tweet,indice) => id !== indice)
-        localStorage.setItem('Tweets', JSON.stringify(tweets))
-        cargarLista(); 
-    }
-}
+// function borrarTweet(e){
+//     if(e.target.classList.contains('borrar-tweet')){
+//         const id = parseInt(e.target.id);
+//         tweets = JSON.parse(localStorage.getItem('Tweets'))
+//         tweets = tweets.filter( (tweet,indice) => id !== indice)
+//         localStorage.setItem('Tweets', JSON.stringify(tweets))
+//         cargarLista(); 
+//     }
+// }
 
 function agregarTweet(e) {
     e.preventDefault();
@@ -43,7 +49,7 @@ function agregarTweet(e) {
     }
 
     tweets = [...tweets, tweetObj];
-    localStorage.setItem('Tweets', JSON.stringify(tweets));
+
     crearHTML();
 
     //Reiniciar el formulario 
@@ -68,7 +74,7 @@ function mostrarError(error) {
 //Muestra el listado de los tweet
 function crearHTML() {
     limpiarHTML();
-    if(tweets.lenght > 0) {
+    if(tweets.length > 0) {
         tweets.forEach( tweet => {
             //Crear el HTML
             const li = document.createElement('li');
@@ -81,6 +87,13 @@ function crearHTML() {
         });
     }
 
+    sincronizarStorage();
+
+}
+
+//Agrega los Tweets actuales a localStorage
+function sincronizarStorage() {
+    localStorage.setItem('tweets', JSON.stringify(tweets));
 }
 
 //Limpiar el HTML
