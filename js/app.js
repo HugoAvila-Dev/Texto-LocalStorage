@@ -15,7 +15,7 @@ function eventListeners() {
         crearHTML();
     })
 
-    listaTweets.addEventListener('click', borrarTweet);
+   // listaTweets.addEventListener('click', borrarTweet);
 }
 
 
